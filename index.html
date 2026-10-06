@@ -1,24 +1,20 @@
 <!doctype html>
 <html lang="es">
   <head>
-    <base target="_top">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base target="_top" />
+    <meta charset="utf-8" />
     <title>Control de asistencia</title>
+
     <style>
       :root {
         color-scheme: light;
-        --bg: #f6f7fb;
+        --bg: #f4f6fa;
         --panel: #ffffff;
-        --text: #1d2433;
-        --muted: #687387;
-        --border: #d9deea;
-        --primary: #0b6bcb;
-        --primary-dark: #084f98;
-        --accent: #13b8a6;
-        --danger: #b42318;
-        --success: #087443;
-        --shadow: 0 16px 40px rgba(29, 36, 51, 0.08);
+        --text: #182438;
+        --muted: #627087;
+        --border: #dce3ed;
+        --primary: #2459a9;
+        --primary-dark: #194581;
       }
 
       * {
@@ -29,8 +25,8 @@
         margin: 0;
         background: var(--bg);
         color: var(--text);
-        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        line-height: 1.45;
+        font-family: Arial, sans-serif;
+        line-height: 1.5;
       }
 
       button,
@@ -40,585 +36,887 @@
       }
 
       .app {
-        width: min(1100px, 100%);
-        margin: 0 auto;
-        padding: 18px;
-      }
-
-      .header {
-        display: grid;
-        gap: 8px;
-        margin-bottom: 16px;
+        max-width: 1180px;
+        margin: auto;
+        padding: 28px 18px;
       }
 
       .eyebrow {
+        margin: 0 0 5px;
         color: var(--muted);
-        font-size: 0.9rem;
-        margin: 0;
+        font-size: 14px;
       }
 
       h1 {
-        font-size: clamp(1.45rem, 3vw, 2.2rem);
-        line-height: 1.15;
-        margin: 0;
+        margin: 0 0 22px;
+        font-size: clamp(26px, 4vw, 38px);
       }
 
       .panel {
         background: var(--panel);
         border: 1px solid var(--border);
-        border-radius: 18px;
-        box-shadow: var(--shadow);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(24, 36, 56, 0.05);
       }
 
       .toolbar {
         display: grid;
-        gap: 14px;
-        padding: 16px;
-      }
-
-      .schedule {
-        display: grid;
-        gap: 10px;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      input, select {
-        width: 100%;
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        background: #fff;
-        color: var(--text);
-        min-height: 44px;
-        padding: 0 12px;
+        grid-template-columns: 2fr 1fr 1fr;
+        gap: 16px;
+        padding: 22px;
       }
 
       .field {
-        display: grid;
-        gap: 6px;
-      }
-
-      label {
-        color: var(--muted);
-        font-size: 0.92rem;
-        font-weight: 700;
-      }
-
-      .actions {
-        display: grid;
-        gap: 10px;
-      }
-
-      .button {
-        border: 1px solid transparent;
-        border-radius: 10px;
-        cursor: pointer;
-        min-height: 44px;
-        padding: 0 14px;
-        font-weight: 700;
-      }
-
-      .button:disabled,
-      select:disabled,
-      input:disabled {
-        cursor: not-allowed;
-        opacity: 0.62;
-      }
-
-      .button.primary {
-        background: var(--primary);
-        color: #fff;
-      }
-
-      .button.primary:hover:not(:disabled) {
-        background: var(--primary-dark);
-      }
-
-      .button.secondary {
-        background: #eef3ff;
-        border-color: #cad8ff;
-        color: #163e89;
-      }
-
-      .summary {
-        display: grid;
-        gap: 8px;
-        padding: 14px 16px;
-        border-top: 1px solid var(--border);
-        border-bottom: 1px solid var(--border);
-        background: #fbfcff;
-      }
-
-      .counter {
-        font-size: 1.05rem;
-        font-weight: 800;
-      }
-
-      .status {
-        min-height: 22px;
-        color: var(--muted);
-      }
-
-      .status.success {
-        color: var(--success);
-      }
-
-      .status.error {
-        color: var(--danger);
-      }
-
-      .list {
-        display: grid;
-        gap: 10px;
-        padding: 16px;
-      }
-
-      .participant {
-        align-items: start;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 10px;
-        padding: 14px;
-        background: #fff;
-      }
-
-      .participant-top {
-        align-items: center;
-        display: flex;
-        gap: 10px;
-      }
-
-      .participant input {
-        inline-size: 20px;
-        block-size: 20px;
-        min-height: 20px;
-        padding: 0;
-        accent-color: var(--primary);
-      }
-
-      .participant select { min-height: 40px; margin-top: 10px; }
-
-      .participant-main {
         min-width: 0;
       }
 
-      .participant-name {
+      .field label {
         display: block;
-        font-weight: 800;
+        margin-bottom: 6px;
+        font-size: 14px;
+        font-weight: bold;
+      }
+
+      .field input,
+      .field select {
+        width: 100%;
+        min-width: 0;
+        height: 46px;
+        padding: 0 10px;
+        border: 1px solid #bdc9d9;
+        border-radius: 8px;
+        background: white;
+        color: var(--text);
+      }
+
+      .actions {
+        grid-column: 1 / -1;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      button {
+        min-height: 44px;
+        padding: 10px 16px;
+        border: 1px solid #c7d4e7;
+        border-radius: 8px;
+        background: #edf3fc;
+        color: #204d8c;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      button.primary {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+        margin-left: auto;
+      }
+
+      button.primary:hover:not(:disabled) {
+        background: var(--primary-dark);
+      }
+
+      button:disabled,
+      input:disabled,
+      select:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
+
+      button:focus-visible,
+      input:focus-visible,
+      select:focus-visible {
+        outline: 3px solid #90baff;
+        outline-offset: 2px;
+      }
+
+      .summary {
+        padding: 16px 22px;
+        background: #f8faff;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .counts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .badge {
+        padding: 5px 10px;
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        background: white;
+        font-size: 13px;
+        font-weight: bold;
+      }
+
+      .status {
+        margin-top: 10px;
+        color: var(--muted);
         overflow-wrap: anywhere;
       }
 
-      .participant-meta {
-        color: var(--muted);
-        display: block;
-        font-size: 0.88rem;
-        overflow-wrap: anywhere;
+      .status.success {
+        color: #17633c;
       }
 
-      .empty {
-        color: var(--muted);
-        padding: 24px 16px;
+      .status.error {
+        color: #b42318;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+      }
+
+      .name-col {
+        width: 40%;
+      }
+
+      .state-col {
+        width: 15%;
+      }
+
+      thead {
+        background: #edf2fb;
+      }
+
+      th,
+      td {
+        padding: 14px 10px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: middle;
+      }
+
+      thead th {
+        font-size: 13px;
         text-align: center;
       }
 
-      @media (min-width: 720px) {
+      thead th:first-child,
+      tbody th {
+        text-align: left;
+        padding-left: 22px;
+      }
+
+      tbody tr:nth-child(even) {
+        background: #fafbfd;
+      }
+
+      tbody tr:hover {
+        background: #f0f5fc;
+      }
+
+      .person-name {
+        display: block;
+        font-size: 15px;
+        overflow-wrap: anywhere;
+      }
+
+      .person-meta {
+        display: block;
+        margin-top: 3px;
+        font-weight: normal;
+        color: var(--muted);
+        font-size: 12px;
+        overflow-wrap: anywhere;
+      }
+
+      .legacy {
+        display: block;
+        margin-top: 5px;
+        color: #946000;
+        font-size: 12px;
+        font-weight: normal;
+      }
+
+      td.option-cell {
+        padding: 0;
+        border-left: 1px solid var(--border);
+      }
+
+      .option-label {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 72px;
+        height: 100%;
+        padding: 12px 4px;
+        cursor: pointer;
+      }
+
+      .option-label input {
+        width: 22px;
+        height: 22px;
+        margin: 0;
+        accent-color: var(--primary);
+      }
+
+      .option-label:has(input:checked) {
+        background: #dfeaff;
+      }
+
+      .option-label:focus-within {
+        outline: 2px solid var(--primary);
+        outline-offset: -2px;
+      }
+
+      .mobile-label {
+        display: none;
+      }
+
+      .empty {
+        padding: 35px 15px;
+        text-align: center;
+        color: var(--muted);
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      @media (max-width: 700px) {
+        .app {
+          padding: 18px 10px;
+        }
+
         .toolbar {
-          align-items: end;
-          grid-template-columns: 1fr auto;
+          grid-template-columns: 1fr 1fr;
+          padding: 15px;
+          gap: 12px;
+        }
+
+        .session-field {
+          grid-column: 1 / -1;
         }
 
         .actions {
-          grid-template-columns: repeat(3, auto);
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+        }
+
+        button.primary {
+          margin-left: 0;
         }
 
         .summary {
-          align-items: center;
-          grid-template-columns: auto 1fr;
+          padding: 15px;
         }
 
-        .list {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
+        .table-wrap {
+          overflow: visible;
+          padding: 12px;
         }
-      }
 
-      @media (max-width: 420px) {
-        .app { padding: 12px; }
-        .schedule { grid-template-columns: 1fr; }
-        .actions { grid-template-columns: 1fr; }
-        .button { width: 100%; }
-      }
+        table,
+        tbody {
+          display: block;
+        }
 
-      @media (min-width: 1024px) {
-        .list {
-          grid-template-columns: repeat(3, minmax(0, 1fr));
+        colgroup,
+        thead {
+          display: none;
+        }
+
+        tbody tr {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          margin-bottom: 12px;
+          border: 1px solid var(--border);
+          border-radius: 10px;
+          overflow: hidden;
+        }
+
+        tbody th {
+          display: block;
+          grid-column: 1 / -1;
+          padding: 12px;
+        }
+
+        td.option-cell {
+          display: block;
+          border-bottom: 0;
+        }
+
+        .option-label {
+          min-height: 100px;
+          flex-direction: column;
+          justify-content: space-between;
+          gap: 10px;
+        }
+
+        .mobile-label {
+          display: block;
+          font-size: 11px;
+          line-height: 1.2;
+          text-align: center;
+          overflow-wrap: anywhere;
         }
       }
     </style>
   </head>
+
   <body>
     <main class="app">
-      <header class="header">
-        <p class="eyebrow">Panel docente · Inteligencia artificial aplicada a las TIC</p>
-        <h1>Pase de lista</h1>
-      </header>
+      <p class="eyebrow">Inteligencia artificial aplicada a las TIC</p>
+      <h1>Control de asistencia</h1>
 
-      <section class="panel" aria-label="Registro de asistencia">
+      <section class="panel" aria-label="Pase de lista">
         <div class="toolbar">
-          <div class="field">
-            <label for="sessionSelect">Clase</label>
+          <div class="field session-field">
+            <label for="sessionSelect">Sesión</label>
             <select id="sessionSelect" disabled>
               <option value="">Cargando sesiones...</option>
             </select>
           </div>
 
-          <div class="schedule" aria-label="Programar fecha y hora">
-            <div class="field">
-              <label for="dateInput">Día de asistencia</label>
-              <input id="dateInput" type="date" disabled>
-            </div>
-            <div class="field">
-              <label for="timeInput">Hora de inicio</label>
-              <input id="timeInput" type="time" value="08:00" disabled>
-            </div>
+          <div class="field">
+            <label for="dateInput">Fecha</label>
+            <input id="dateInput" type="date" disabled />
+          </div>
+
+          <div class="field">
+            <label for="timeInput">Hora de inicio</label>
+            <input id="timeInput" type="time" disabled />
           </div>
 
           <div class="actions">
-            <button id="scheduleButton" class="button secondary" type="button" disabled>Guardar horario</button>
-            <button id="markAllButton" class="button secondary" type="button" disabled>Todos presentes</button>
-            <button id="unmarkAllButton" class="button secondary" type="button" disabled>Todos ausentes</button>
-            <button id="saveButton" class="button primary" type="button" disabled>Guardar pase de lista</button>
+            <button id="scheduleButton" type="button" disabled>
+              Guardar horario
+            </button>
+
+            <button id="markAllButton" type="button" disabled>
+              Todos presentes
+            </button>
+
+            <button id="unmarkAllButton" type="button" disabled>
+              Todos ausentes
+            </button>
+
+            <button id="saveButton" class="primary" type="button" disabled>
+              Guardar asistencia
+            </button>
           </div>
         </div>
 
-        <div class="summary" aria-live="polite">
-          <div id="counter" class="counter">0 presentes</div>
-          <div id="status" class="status">Selecciona una clase para cargar el grupo.</div>
+        <div class="summary">
+          <div id="counter" class="counts" aria-live="polite"></div>
+          <div id="status" class="status" role="status" aria-live="polite">
+            Cargando sesiones...
+          </div>
         </div>
 
-        <div id="participantsList" class="list">
-          <div class="empty">Sin participantes cargados.</div>
+        <div class="table-wrap" id="tableWrap" aria-busy="false">
+          <table
+            id="attendanceTable"
+            aria-label="Asistencia por participante"
+            hidden
+          >
+            <colgroup>
+              <col class="name-col" />
+              <col class="state-col" />
+              <col class="state-col" />
+              <col class="state-col" />
+              <col class="state-col" />
+            </colgroup>
+
+            <thead>
+              <tr>
+                <th scope="col">Nombre de la persona</th>
+                <th scope="col">Asistió</th>
+                <th scope="col">No asistió</th>
+                <th scope="col">Justificante</th>
+                <th scope="col">Suspensión de clases</th>
+              </tr>
+            </thead>
+
+            <tbody id="participantsBody"></tbody>
+          </table>
+
+          <div id="emptyMessage" class="empty">
+            Selecciona una sesión para mostrar los participantes.
+          </div>
         </div>
       </section>
     </main>
 
     <script>
+      const OPCIONES = [
+        ["PRESENTE", "Asistió"],
+        ["AUSENTE", "No asistió"],
+        ["JUSTIFICADA", "Justificante"],
+        ["SUSPENDIDA", "Suspensión de clases"],
+      ];
+
       const state = {
         sessions: [],
         participants: [],
-        selectedSession: '',
+        selectedSession: "",
         dirty: false,
+        scheduleDirty: false,
         loading: false,
         requestId: 0,
       };
 
-      const elements = {
-        sessionSelect: document.getElementById('sessionSelect'),
-        dateInput: document.getElementById('dateInput'),
-        timeInput: document.getElementById('timeInput'),
-        scheduleButton: document.getElementById('scheduleButton'),
-        markAllButton: document.getElementById('markAllButton'),
-        unmarkAllButton: document.getElementById('unmarkAllButton'),
-        saveButton: document.getElementById('saveButton'),
-        counter: document.getElementById('counter'),
-        status: document.getElementById('status'),
-        participantsList: document.getElementById('participantsList'),
-      };
+      const elements = {};
 
-      document.addEventListener('DOMContentLoaded', init);
+      document.addEventListener("DOMContentLoaded", init);
 
-      window.addEventListener('beforeunload', (event) => {
-        if (!state.dirty) {
-          return;
+      window.addEventListener("beforeunload", (event) => {
+        if (state.dirty || state.scheduleDirty) {
+          event.preventDefault();
+          event.returnValue = "";
         }
-
-        event.preventDefault();
-        event.returnValue = '';
       });
 
       function init() {
-        elements.sessionSelect.addEventListener('change', handleSessionChange);
-        elements.scheduleButton.addEventListener('click', saveSchedule);
-        elements.markAllButton.addEventListener('click', () => setAllParticipants(true));
-        elements.unmarkAllButton.addEventListener('click', () => setAllParticipants(false));
-        elements.saveButton.addEventListener('click', saveAttendance);
+        [
+          "sessionSelect",
+          "dateInput",
+          "timeInput",
+          "scheduleButton",
+          "markAllButton",
+          "unmarkAllButton",
+          "saveButton",
+          "counter",
+          "status",
+          "tableWrap",
+          "attendanceTable",
+          "participantsBody",
+          "emptyMessage",
+        ].forEach((id) => {
+          elements[id] = document.getElementById(id);
+        });
+
+        elements.sessionSelect.addEventListener("change", changeSession);
+        elements.scheduleButton.addEventListener("click", saveSchedule);
+        elements.markAllButton.addEventListener("click", () =>
+          markAll("PRESENTE"),
+        );
+        elements.unmarkAllButton.addEventListener("click", () =>
+          markAll("AUSENTE"),
+        );
+        elements.saveButton.addEventListener("click", saveAttendance);
+
+        elements.dateInput.addEventListener("input", scheduleChanged);
+        elements.timeInput.addEventListener("input", scheduleChanged);
+
+        updateCounter();
+
+        if (
+          typeof google === "undefined" ||
+          !google.script ||
+          !google.script.run
+        ) {
+          setMessage(
+            "Abre esta aplicación desde la URL de Google Apps Script.",
+            "error",
+          );
+          return;
+        }
+
         loadSessions();
       }
 
-      function loadSessions(options = {}) {
-        setLoading(true, options.preserveMessage ? elements.status.textContent : 'Cargando sesiones...');
+      function loadSessions() {
+        setLoading(true);
+        setMessage("Cargando sesiones...");
 
         google.script.run
           .withSuccessHandler((sessions) => {
             state.sessions = Array.isArray(sessions) ? sessions : [];
             renderSessions();
-            if (!options.preserveMessage) {
-              setMessage('Selecciona una sesion para cargar participantes.');
-            }
             setLoading(false);
+
+            setMessage(
+              state.sessions.length
+                ? "Selecciona una sesión para registrar asistencia."
+                : "No hay sesiones. Ejecuta prepararBaseDatos() en Apps Script.",
+            );
           })
-          .withFailureHandler((error) => {
-            setLoading(false);
-            setMessage(getErrorMessage(error), 'error');
-            renderEmpty('No se pudieron cargar las sesiones.');
-          })
+          .withFailureHandler(showError)
           .obtenerSesiones();
       }
 
       function renderSessions() {
-        elements.sessionSelect.textContent = '';
+        elements.sessionSelect.replaceChildren();
 
-        const placeholder = document.createElement('option');
-        placeholder.value = '';
-        placeholder.textContent = 'Selecciona una sesion';
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = "Selecciona una sesión";
         elements.sessionSelect.appendChild(placeholder);
 
         state.sessions.forEach((session) => {
-          const option = document.createElement('option');
+          const option = document.createElement("option");
           option.value = session.idSesion;
-          option.textContent = `${session.idSesion} · ${session.tema} · ${session.fecha} ${session.hora || ''}`;
+          option.textContent =
+            `${session.idSesion} · ${session.tema} · ` +
+            `${session.fecha} ${session.hora || ""}`;
+
           elements.sessionSelect.appendChild(option);
         });
 
-        if (state.selectedSession) {
-          elements.sessionSelect.value = state.selectedSession;
-        }
-
-        elements.sessionSelect.disabled = state.loading || state.sessions.length === 0;
+        elements.sessionSelect.value = state.selectedSession;
       }
 
-      function handleSessionChange() {
-        const nextSession = elements.sessionSelect.value;
+      function changeSession() {
+        const next = elements.sessionSelect.value;
 
-        if (state.dirty && !window.confirm('Hay cambios sin guardar. ¿Quieres descartarlos?')) {
+        if (
+          (state.dirty || state.scheduleDirty) &&
+          !window.confirm(
+            "Hay cambios sin guardar. ¿Deseas descartarlos y cambiar de sesión?",
+          )
+        ) {
           elements.sessionSelect.value = state.selectedSession;
           return;
         }
 
-        state.selectedSession = nextSession;
-        state.dirty = false;
+        state.selectedSession = next;
         state.participants = [];
+        state.dirty = false;
+        state.scheduleDirty = false;
+        state.requestId += 1;
+
+        const session = state.sessions.find((item) => item.idSesion === next);
+
+        elements.dateInput.value = session ? session.fecha : "";
+        elements.timeInput.value = session ? session.hora || "08:00" : "";
+
         renderParticipants();
 
-        const session = state.sessions.find((item) => item.idSesion === nextSession);
-        if (session) {
-          elements.dateInput.value = session.fecha;
-          elements.timeInput.value = session.hora || '08:00';
-        }
-
-        if (!nextSession) {
-          setMessage('Selecciona una sesion para cargar participantes.');
-          updateControls();
+        if (!next) {
+          setMessage("Selecciona una sesión.");
           return;
         }
 
-        loadParticipants(nextSession);
-      }
-
-      function loadParticipants(idSesion) {
-        const requestId = state.requestId + 1;
-        state.requestId = requestId;
-        setLoading(true, 'Cargando participantes...');
+        const requestId = state.requestId;
+        setLoading(true);
+        setMessage("Cargando participantes...");
 
         google.script.run
           .withSuccessHandler((participants) => {
-            if (requestId !== state.requestId || idSesion !== state.selectedSession) {
+            if (requestId !== state.requestId || next !== state.selectedSession)
               return;
-            }
 
-            state.participants = Array.isArray(participants) ? participants : [];
-            state.dirty = false;
+            state.participants = (
+              Array.isArray(participants) ? participants : []
+            ).map((participant) => ({
+              ...participant,
+              estado:
+                participant.estado ||
+                (participant.presente ? "PRESENTE" : "AUSENTE"),
+            }));
+
             renderParticipants();
-            setMessage('Participantes cargados.');
             setLoading(false);
+
+            const legacy = state.participants.some(
+              (participant) =>
+                !OPCIONES.some(([value]) => value === participant.estado),
+            );
+
+            setMessage(
+              legacy
+                ? "Hay estados anteriores señalados bajo el nombre. Se conservarán si no los cambias."
+                : `Sesión ${next}: ${session ? session.estado : ""}.`,
+            );
           })
           .withFailureHandler((error) => {
-            if (requestId !== state.requestId) {
-              return;
-            }
-
-            state.participants = [];
-            renderParticipants();
-            setLoading(false);
-            setMessage(getErrorMessage(error), 'error');
+            if (requestId === state.requestId) showError(error);
           })
-          .obtenerParticipantes(idSesion);
+          .obtenerParticipantes(next);
       }
 
       function renderParticipants() {
-        elements.participantsList.textContent = '';
+        elements.participantsBody.replaceChildren();
 
-        if (state.participants.length === 0) {
-          renderEmpty('Sin participantes cargados.');
-          updateCounter();
-          updateControls();
-          return;
-        }
+        const hasParticipants = state.participants.length > 0;
+        elements.attendanceTable.hidden = !hasParticipants;
+        elements.emptyMessage.hidden = hasParticipants;
 
-        state.participants.forEach((participant) => {
-          const label = document.createElement('article');
-          label.className = 'participant';
+        state.participants.forEach((participant, index) => {
+          const row = document.createElement("tr");
 
-          const top = document.createElement('div');
-          top.className = 'participant-top';
+          const personCell = document.createElement("th");
+          personCell.scope = "row";
 
-          const checkbox = document.createElement('input');
-          checkbox.type = 'checkbox';
-          checkbox.checked = participant.estado === 'PRESENTE';
-          checkbox.addEventListener('change', () => setParticipantState(participant, checkbox.checked ? 'PRESENTE' : 'AUSENTE'));
-
-          const body = document.createElement('span');
-          body.className = 'participant-main';
-
-          const name = document.createElement('span');
-          name.className = 'participant-name';
+          const name = document.createElement("span");
+          name.className = "person-name";
           name.textContent = participant.nombre;
 
-          const meta = document.createElement('span');
-          meta.className = 'participant-meta';
-          meta.textContent = `${participant.idParticipante} - ${participant.correo}`;
+          const meta = document.createElement("span");
+          meta.className = "person-meta";
+          meta.textContent = `${participant.idParticipante} · ${participant.correo}`;
 
-          body.appendChild(name);
-          body.appendChild(meta);
-          top.appendChild(checkbox);
-          top.appendChild(body);
-          label.appendChild(top);
+          const legacy = document.createElement("span");
+          legacy.className = "legacy";
+          updateLegacyLabel(legacy, participant.estado);
 
-          const statusSelect = document.createElement('select');
-          statusSelect.setAttribute('aria-label', `Estado de ${participant.nombre}`);
-          [['PRESENTE', 'Presente'], ['AUSENTE', 'Ausente'], ['RETARDO', 'Retardo'], ['JUSTIFICADA', 'Falta justificada'], ['SUSPENDIDA', 'Suspensión de clases']].forEach(([value, text]) => {
-            const option = document.createElement('option');
-            option.value = value;
-            option.textContent = text;
-            statusSelect.appendChild(option);
+          personCell.append(name, meta, legacy);
+          row.appendChild(personCell);
+
+          OPCIONES.forEach(([value, title]) => {
+            const cell = document.createElement("td");
+            cell.className = "option-cell";
+
+            const label = document.createElement("label");
+            label.className = "option-label";
+
+            const mobileLabel = document.createElement("span");
+            mobileLabel.className = "mobile-label";
+            mobileLabel.textContent = title;
+
+            const radio = document.createElement("input");
+            radio.type = "radio";
+            radio.name = `asistencia-${index}`;
+            radio.value = value;
+            radio.checked = participant.estado === value;
+            radio.setAttribute("aria-label", `${title}: ${participant.nombre}`);
+
+            radio.addEventListener("change", () => {
+              if (state.loading) return;
+
+              participant.estado = value;
+              state.dirty = true;
+              updateLegacyLabel(legacy, value);
+              updateCounter();
+              updateControls();
+              setMessage("Hay cambios de asistencia sin guardar.");
+            });
+
+            label.append(mobileLabel, radio);
+            cell.appendChild(label);
+            row.appendChild(cell);
           });
-          statusSelect.value = participant.estado || (participant.presente ? 'PRESENTE' : 'AUSENTE');
-          statusSelect.addEventListener('change', () => setParticipantState(participant, statusSelect.value));
-          label.appendChild(statusSelect);
-          elements.participantsList.appendChild(label);
+
+          elements.participantsBody.appendChild(row);
         });
 
         updateCounter();
         updateControls();
       }
 
-      function renderEmpty(message) {
-        elements.participantsList.textContent = '';
-        const empty = document.createElement('div');
-        empty.className = 'empty';
-        empty.textContent = message;
-        elements.participantsList.appendChild(empty);
+      function updateLegacyLabel(element, estado) {
+        const known = OPCIONES.some(([value]) => value === estado);
+        element.hidden = known;
+        element.textContent = known
+          ? ""
+          : `Estado guardado anteriormente: ${estado}`;
       }
 
-      function setAllParticipants(presente) {
+      function markAll(estado) {
+        if (state.loading || !state.participants.length) return;
+
         state.participants.forEach((participant) => {
-          participant.estado = presente ? 'PRESENTE' : 'AUSENTE';
-          participant.presente = presente;
+          participant.estado = estado;
         });
 
         state.dirty = true;
         renderParticipants();
+        setMessage("Hay cambios de asistencia sin guardar.");
+      }
+
+      function updateCounter() {
+        const counts = {
+          PRESENTE: 0,
+          AUSENTE: 0,
+          JUSTIFICADA: 0,
+          SUSPENDIDA: 0,
+        };
+
+        let otros = 0;
+
+        state.participants.forEach((participant) => {
+          if (
+            Object.prototype.hasOwnProperty.call(counts, participant.estado)
+          ) {
+            counts[participant.estado] += 1;
+          } else {
+            otros += 1;
+          }
+        });
+
+        const labels = [
+          `Asistió: ${counts.PRESENTE}`,
+          `No asistió: ${counts.AUSENTE}`,
+          `Justificante: ${counts.JUSTIFICADA}`,
+          `Suspensión de clases: ${counts.SUSPENDIDA}`,
+        ];
+
+        if (otros) labels.push(`Otros estados: ${otros}`);
+        labels.push(`Total: ${state.participants.length}`);
+
+        elements.counter.replaceChildren();
+
+        labels.forEach((text) => {
+          const badge = document.createElement("span");
+          badge.className = "badge";
+          badge.textContent = text;
+          elements.counter.appendChild(badge);
+        });
       }
 
       function saveAttendance() {
-        if (!state.selectedSession || state.participants.length === 0) {
-          setMessage('Selecciona una sesion con participantes.', 'error');
+        if (
+          state.loading ||
+          !state.selectedSession ||
+          !state.participants.length
+        )
           return;
-        }
 
+        const idSesion = state.selectedSession;
         const payload = state.participants.map((participant) => ({
           idParticipante: participant.idParticipante,
-          estado: participant.estado || (participant.presente ? 'PRESENTE' : 'AUSENTE'),
+          estado: participant.estado,
         }));
 
-        setLoading(true, 'Guardando asistencia...');
+        setLoading(true);
+        setMessage("Guardando asistencia...");
 
         google.script.run
           .withSuccessHandler((result) => {
             state.dirty = false;
-            const total = result && typeof result.total === 'number' ? result.total : payload.length;
+
+            const session = state.sessions.find(
+              (item) => item.idSesion === idSesion,
+            );
+
+            if (session) session.estado = "REGISTRADA";
+
             setLoading(false);
-            setMessage(`Asistencia guardada. Registros procesados: ${total}.`, 'success');
-            loadSessions({ preserveMessage: true });
+
+            setMessage(
+              `Asistencia guardada: ${result.total} registros. ` +
+                `Nuevos: ${result.insertados}. ` +
+                `Actualizados: ${result.actualizados}.` +
+                (state.scheduleDirty ? " El horario sigue sin guardar." : ""),
+              "success",
+            );
           })
-          .withFailureHandler((error) => {
-            setLoading(false);
-            setMessage(getErrorMessage(error), 'error');
-          })
-          .guardarAsistencia(state.selectedSession, payload);
+          .withFailureHandler(showError)
+          .guardarAsistencia(idSesion, payload);
       }
 
-      function updateCounter() {
-        const presentes = state.participants.filter((participant) => participant.presente).length;
-        const retardos = state.participants.filter((participant) => participant.estado === 'RETARDO').length;
-        const justificadas = state.participants.filter((participant) => participant.estado === 'JUSTIFICADA').length;
-        elements.counter.textContent = `${presentes} presentes · ${retardos} retardos · ${justificadas} justificadas · ${state.participants.length} alumnos`;
-      }
+      function scheduleChanged() {
+        const session = state.sessions.find(
+          (item) => item.idSesion === state.selectedSession,
+        );
 
-      function updateControls() {
-        const hasParticipants = state.participants.length > 0;
-        const disabled = state.loading;
+        state.scheduleDirty =
+          Boolean(session) &&
+          (elements.dateInput.value !== session.fecha ||
+            elements.timeInput.value !== (session.hora || "08:00"));
 
-        elements.sessionSelect.disabled = disabled || state.sessions.length === 0;
-        elements.markAllButton.disabled = disabled || !hasParticipants;
-        elements.unmarkAllButton.disabled = disabled || !hasParticipants;
-        elements.saveButton.disabled = disabled || !hasParticipants || !state.dirty;
-        elements.scheduleButton.disabled = disabled || !state.selectedSession || !elements.dateInput.value || !elements.timeInput.value;
-        elements.dateInput.disabled = disabled || !state.selectedSession;
-        elements.timeInput.disabled = disabled || !state.selectedSession;
+        updateControls();
 
-        elements.participantsList.querySelectorAll('input').forEach((input) => {
-          input.disabled = disabled;
-        });
-        elements.participantsList.querySelectorAll('select').forEach((select) => {
-          select.disabled = disabled;
-        });
-      }
-
-      function setParticipantState(participant, estado) {
-        participant.estado = estado;
-        participant.presente = estado === 'PRESENTE';
-        state.dirty = true;
-        renderParticipants();
+        if (state.scheduleDirty) {
+          setMessage("Hay cambios de horario sin guardar.");
+        }
       }
 
       function saveSchedule() {
-        if (!state.selectedSession) return;
-        setLoading(true, 'Guardando horario...');
-        google.script.run
-          .withSuccessHandler(() => {
-            setLoading(false);
-            setMessage('Horario guardado correctamente.', 'success');
-            loadSessions({ preserveMessage: true });
-          })
-          .withFailureHandler((error) => {
-            setLoading(false);
-            setMessage(getErrorMessage(error), 'error');
-          })
-          .programarSesion(state.selectedSession, elements.dateInput.value, elements.timeInput.value);
-      }
+        if (state.loading || !state.selectedSession) return;
 
-      function setLoading(loading, message) {
-        state.loading = loading;
-
-        if (message) {
-          setMessage(message);
+        if (
+          !elements.dateInput.reportValidity() ||
+          !elements.timeInput.reportValidity() ||
+          !elements.dateInput.value ||
+          !elements.timeInput.value
+        ) {
+          setMessage("Selecciona una fecha y una hora válidas.", "error");
+          return;
         }
 
+        const idSesion = state.selectedSession;
+        const fecha = elements.dateInput.value;
+        const hora = elements.timeInput.value;
+
+        setLoading(true);
+        setMessage("Guardando horario...");
+
+        google.script.run
+          .withSuccessHandler((result) => {
+            const session = state.sessions.find(
+              (item) => item.idSesion === idSesion,
+            );
+
+            if (session) {
+              session.fecha = result.fecha;
+              session.hora = result.hora;
+              session.estado = result.estado;
+            }
+
+            state.scheduleDirty = false;
+            renderSessions();
+            setLoading(false);
+
+            setMessage(
+              "Horario guardado correctamente." +
+                (state.dirty ? " La asistencia sigue sin guardar." : ""),
+              "success",
+            );
+          })
+          .withFailureHandler(showError)
+          .programarSesion(idSesion, fecha, hora);
+      }
+
+      function updateControls() {
+        const busy = state.loading;
+        const hasSession = Boolean(state.selectedSession);
+        const hasParticipants = state.participants.length > 0;
+
+        elements.sessionSelect.disabled = busy || !state.sessions.length;
+        elements.dateInput.disabled = busy || !hasSession;
+        elements.timeInput.disabled = busy || !hasSession;
+
+        elements.scheduleButton.disabled =
+          busy ||
+          !hasSession ||
+          !elements.dateInput.value ||
+          !elements.timeInput.value;
+
+        elements.markAllButton.disabled = busy || !hasParticipants;
+        elements.unmarkAllButton.disabled = busy || !hasParticipants;
+
+        // Permite guardar una sesión con todos ausentes desde el inicio.
+        elements.saveButton.disabled = busy || !hasParticipants;
+
+        elements.participantsBody.querySelectorAll("input").forEach((input) => {
+          input.disabled = busy;
+        });
+
+        elements.tableWrap.setAttribute("aria-busy", String(busy));
+      }
+
+      function setLoading(loading) {
+        state.loading = loading;
         updateControls();
       }
 
-      function setMessage(message, type) {
-        elements.status.className = `status${type ? ` ${type}` : ''}`;
-        elements.status.textContent = message || '';
+      function setMessage(message, type = "") {
+        elements.status.textContent = message;
+        elements.status.className = `status ${type}`;
       }
 
-      function getErrorMessage(error) {
-        if (error && error.message) {
-          return error.message;
-        }
-
-        return 'Ocurrio un error inesperado.';
+      function showError(error) {
+        setLoading(false);
+        setMessage(
+          error && error.message
+            ? error.message
+            : "Ocurrió un error. Intenta nuevamente.",
+          "error",
+        );
       }
     </script>
   </body>

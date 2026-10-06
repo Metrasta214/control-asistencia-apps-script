@@ -1,18 +1,18 @@
 const SPREADSHEET_ID = "1GBuWaHHUpZ4xOI9gIfxR-RRJlCF9fhIn4SjzVZwlqdM";
 
-const SHEET_NAMES = {
+const SHEET_NAMES = Object.freeze({
   PARTICIPANTES: "Participantes",
   SESIONES: "Sesiones",
   ASISTENCIAS: "Asistencias",
-};
+});
 
-const HEADERS = {
+const HEADERS = Object.freeze({
   PARTICIPANTES: ["id_participante", "nombre", "correo", "activo"],
   SESIONES: ["id_sesion", "numero", "fecha", "tema", "estado"],
   ASISTENCIAS: ["id_sesion", "id_participante", "estado", "hora_registro"],
-};
+});
 
-const ESTADOS = {
+const ESTADOS = Object.freeze({
   PRESENTE: "PRESENTE",
   AUSENTE: "AUSENTE",
   JUSTIFICADA: "JUSTIFICADA",
@@ -20,7 +20,7 @@ const ESTADOS = {
   RETARDO: "RETARDO",
   PROGRAMADA: "PROGRAMADA",
   REGISTRADA: "REGISTRADA",
-};
+});
 
 function getSpreadsheet_() {
   return SpreadsheetApp.openById(SPREADSHEET_ID);
@@ -40,23 +40,21 @@ function getSheet_(sheetName) {
 
 function validateHeaders_(sheet, expectedHeaders) {
   const range = sheet.getRange(1, 1, 1, expectedHeaders.length);
-  const currentHeaders = range.getValues()[0];
-  const emptyHeaders = currentHeaders.every((header) => header === "");
 
-  if (sheet.getLastRow() === 0 || emptyHeaders) {
+  if (sheet.getLastRow() === 0) {
     range.setValues([expectedHeaders]);
-    sheet.setFrozenRows(1);
-    return;
-  }
-
-  const hasInvalidHeaders = expectedHeaders.some(
-    (header, index) => currentHeaders[index] !== header,
-  );
-
-  if (hasInvalidHeaders) {
-    throw new Error(
-      `Encabezados invalidos en ${sheet.getName()}. Se esperaba: ${expectedHeaders.join(", ")}.`,
+  } else {
+    const currentHeaders = range.getValues()[0];
+    const invalid = expectedHeaders.some(
+      (header, index) => String(currentHeaders[index]).trim() !== header,
     );
+
+    if (invalid) {
+      throw new Error(
+        `Revisa los encabezados de ${sheet.getName()}. ` +
+          `Deben ser: ${expectedHeaders.join(", ")}.`,
+      );
+    }
   }
 
   sheet.setFrozenRows(1);
@@ -65,21 +63,46 @@ function validateHeaders_(sheet, expectedHeaders) {
 function getDataRows_(sheet, width) {
   const lastRow = sheet.getLastRow();
 
-  if (lastRow < 2) {
-    return [];
-  }
-
-  return sheet.getRange(2, 1, lastRow - 1, width).getValues();
+  return lastRow < 2
+    ? []
+    : sheet.getRange(2, 1, lastRow - 1, width).getValues();
 }
 
 function normalizeBoolean_(value) {
-  if (typeof value === "boolean") {
-    return value;
+  if (typeof value === "boolean") return value;
+  if (typeof value === "number") return value === 1;
+
+  return ["true", "verdadero", "1", "sí", "si"].includes(
+    String(value || "")
+      .trim()
+      .toLowerCase(),
+  );
+}
+
+function appendRows_(sheet, rows) {
+  if (!rows.length) return;
+
+  sheet
+    .getRange(sheet.getLastRow() + 1, 1, rows.length, rows[0].length)
+    .setValues(rows);
+}
+
+function formatDate_(value) {
+  if (value instanceof Date && !isNaN(value.getTime())) {
+    return Utilities.formatDate(
+      value,
+      Session.getScriptTimeZone(),
+      "yyyy-MM-dd",
+    );
   }
 
-  if (typeof value === "string") {
-    return value.toLowerCase() === "true";
+  return String(value || "");
+}
+
+function formatTime_(value) {
+  if (value instanceof Date && !isNaN(value.getTime())) {
+    return Utilities.formatDate(value, Session.getScriptTimeZone(), "HH:mm");
   }
 
-  return Boolean(value);
+  return "08:00";
 }
